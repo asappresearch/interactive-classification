@@ -1,0 +1,139 @@
+{% extends 'index.html' %}
+
+{% block headers %}
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="/static/js/d3tip.js"></script>
+    <script src="/static/js/lib.js"></script>
+{% endblock %}
+
+{% block title %}Multi-Turn FAQ{% endblock %}
+
+{% block dropdown %}
+<div id="navbar-dates" class="navbar-right">
+<!--
+    <div class="form-group">
+        <select name="choose-faq" id="choose-faq">
+            {% for item in options %}
+                <option value="{{ item.value }}">{{ item.label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+-->
+</div>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-0">
+                <div id="show_questionnaire"></div>
+            </div>
+            <div class="col-sm-4 col-sm-offset-0">
+                <div id="chat-history">
+                    <div class="chat-container">
+                        <!--
+                        <div class="chat first">{{ query }}</div>
+                        -->
+                        <div></div>
+
+                    </div>
+                    <div></div>
+                    <div class="chat-editor">
+                        <form action="/send" id="messenger">
+                            <input id="message" class="edit" type="text">
+                            <input id="send" class="send" type="submit" value="Send">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="faq-label">
+                <div>
+                    <h3>True FAQ</h3>
+                    <p class="true-faq">
+                        {{ faq }}
+                    </p>
+<!--
+                    <div id="tags">
+                        {% for tag in data['tag_list'] %}
+                          <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div> 
+-->
+                    <h1>&nbsp</h1>
+                    <h1>&nbsp</h1>
+                    <h3>Predicted FAQ</h3>
+                    <p class="pred-faq" id="pred-faq"></p>
+<!--                    <div id="show_questionnaire"></div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script type="text/javascript">
+        var questionnaire_body = `
+            <p>Based on the interaction with the system, please answer the following questions in the scale of 1 to 10.</p>
+            <form action="{{ url_for('finish') }}" method="POST">
+
+            1. How natural is the interaction?<br>
+            <input type="number" name="question1" min="1" max="10"/></br><br>
+
+            2. Do you feel engaged during the interaction?<br>
+            <input type="number" name="question2" min="1" max="10"/></br><br>
+
+            3. Do you feel understood?<br>
+            <input type="number" name="question3" min="1" max="10"/></br><br>
+
+            4. Do you think the questions are helpful for finding your real intention?<br>
+            <input type="number" name="question4" min="1" max="10"/></br><br>
+
+            <input type="submit" value="submit"/><br>
+            </form>`
+        /* Detect changing select box */
+
+        jQuery("#choose-faq").on('change', function(x){
+            jQuery('.chat').remove();
+            var faq_id = jQuery(this).val();
+            jQuery.post(
+                '/faq-details/',
+                {'faq-id': faq_id},
+                function(data){
+                    var tag_list = jQuery("#tags");
+                    jQuery(".true-faq").text(data['true_faq']);
+                    jQuery(".chat-container").append("<div class='chat'>" + data['initial_query'] + "</div>");
+
+                    for (var i in data['tag_list']) {
+                        var tag = data['tag_list'][i]
+                        var append = "<span class='tag'>" + tag + "</span>";
+                        tag_list.append(append);
+                    }
+                }
+            );
+        });
+
+        jQuery("#messenger").on("submit", function(event){
+            var message = jQuery("#message").val();
+            jQuery(".chat-container").append("<div class='chat'>" + message + "</div>");
+            jQuery.post(
+                "/send/",
+                {'message': message},
+                function(data){
+                    data = JSON.parse(data)
+                    jQuery(".chat-container").append("<div class='chat'>" + data['ft'] + "</div>");
+                    jQuery("#pred-faq").html(data['faq']);
+
+                    jQuery("#message").val('');
+                    $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+
+                    if (data['show_questionnaire'] === true) {
+//                        jQuery("#show_questionnaire").append("<a href = '/questionnaire'>Go to questionnaire.</a>");
+                        jQuery("#show_questionnaire").append(questionnaire_body);
+                    }
+                }
+            );
+            event.preventDefault();
+        });
+
+    </script>
+{% endblock %}

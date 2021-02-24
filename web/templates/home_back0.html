@@ -1,0 +1,109 @@
+{% extends 'index.html' %}
+
+{% block headers %}
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="/static/js/d3tip.js"></script>
+    <script src="/static/js/lib.js"></script>
+{% endblock %}
+
+{% block title %}Multi-Turn FAQ{% endblock %}
+
+{% block dropdown %}
+<div id="navbar-dates" class="navbar-right">
+    <div class="form-group">
+        <select name="choose-faq" id="choose-faq">
+            {% for item in options %}
+                <option value="{{ item.value }}">{{ item.label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-4">
+                <div id="chat-history">
+                    <div class="chat-container">
+                        <div class="chat first">{{ query }}</div>
+                        <div></div>
+
+                    </div>
+                    <div></div>
+                    <div class="chat-editor">
+                        <form action="/send" id="messenger">
+                            <input id="message" class="edit" type="text">
+                            <input id="send" class="send" type="submit" value="Send">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" id="faq-label">
+                <div>
+                    <h3>True FAQ</h3>
+                    <p class="true-faq">
+                        {{ faq }}
+                    </p>
+                    <div id="tags">
+                        {% for tag in data['tag_list'] %}
+                          <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script type="text/javascript">
+
+        /* Detect changing select box */
+
+        jQuery("#choose-faq").on('change', function(x){
+            jQuery('.chat').remove();
+            var faq_id = jQuery(this).val();
+            jQuery.post(
+                    '/faq-details/',
+                    {'faq-id': faq_id},
+                    function(data){
+                        var tag_list = jQuery("#tags");
+                        jQuery(".true-faq").text(data['true_faq']);
+                        jQuery(".chat-container").append("<div class='chat'>" + data['initial_query'] + "</div>");
+
+                        for(var i in data['tag_list']) {
+                            var tag = data['tag_list'][i]
+                            var append = "<span class='tag'>" + tag + "</span>";
+                            tag_list.append(append);
+                        }
+                    }
+            );
+        });
+
+        jQuery("#messenger").on("submit", function(event){
+            var message = jQuery("#message").val();
+            jQuery(".chat-container").append("<div class='chat'>" + message + "</div>");
+            jQuery.post(
+                    "/send/",
+                    {'message': message},
+                    function(data){
+                        jQuery(".chat-container").append("<div class='chat'>" + data + "</div>");
+                        jQuery("#message").val('');
+                        $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+                    }
+            );
+            event.preventDefault();
+        });
+
+        jQuery.post(
+                "/send/",
+                {'message': ''},
+                function(data){
+                    jQuery(".chat-container").append("<div class='chat'>" + data + "</div>");
+                    jQuery("#message").val('');
+                    $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+                }
+        );
+    </script>
+{% endblock %}

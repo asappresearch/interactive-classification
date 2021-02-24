@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Based on the interaction with the system, please answer the following questions.</h2>
+
+    <form action="{{ url_for('finish') }}" method="POST">
+            <h3>Questionnaire</h3>
+            question 1<br>
+            <input type="number" name="question1"/></br>
+
+            question 2<br>
+            <input type="number" name="question2"/></br>
+            
+            <input type="submit" value="submit"/><br>
+    </form>
+  </body>
+</html>

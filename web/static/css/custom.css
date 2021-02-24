@@ -1,0 +1,132 @@
+.navbar-brand .logo {
+    display: inline-block;
+    height:110%;
+}
+
+.navbar-default {
+    background-color: #383b44;
+    border-color: #222427;
+}
+
+nav.navbar a {
+    color:white!important;
+}
+nav.navbar li.active a {
+    color:#383b44!important;
+    background-color:white!important;
+}
+
+#chat-history {
+    border-radius: 16px;
+    backface-visibility: hidden;
+    -webkit-box-shadow: 0 2px 25px 3px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 25px 3px rgba(0,0,0,0.3);
+    background: #fcfcfc linear-gradient(19deg, rgba(252,252,252,0.46), #f6f6f8);
+    width: 100%;
+    height: 400px;
+}
+
+.chat-container {
+    height: 340px;
+    width: 100%;
+    padding:20px;
+    overflow-y: scroll;
+}
+
+.chat-editor {
+    height: 50px;
+    margin-top: 10px;
+    width:100%;
+    bottom:0;
+}
+
+.edit {
+    border-radius: 0 0 15px 15px;
+    background-color: white;
+    width:75%;
+    height:50px;
+    border: 1px solid transparent;
+    border-top: none;
+    border-bottom: 1px solid #DDD;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+    padding: 0.6em;
+}
+
+.send {
+    width:23%;
+    padding:1%;
+    margin:0;
+    height:50px;
+    border-radius: 0 0 15px 15px;
+    background-color: orange;
+    border: transparent;
+    color:white;
+    font-weight: 400;
+}
+
+.send:hover {
+    box-shadow: inset -2px -2px #333, 0px 0px #333;
+}
+
+.chat {
+    clear:both;
+    margin-bottom:0.6em;
+    background-color:#efefef;
+    box-shadow: 0 0px 8px 0px rgba(0,0,0,0.3);
+    float:left;
+    padding: 0.2em 0.6em;
+    border-radius: 0.5em;
+    max-width: 80%;
+}
+
+.chat:nth-child(2n + 0) {
+    float:right;
+    background-color: orange;
+    color:white;
+}
+
+h3 {
+    font-size: 1.2em;
+    margin-bottom: 0.2em;
+    margin-top: 0;
+}
+
+#faq-label {
+    text-align: center;
+    margin-bottom: 1em;
+    padding-top:60px;
+}
+
+
+#navbar-dates {
+    line-height: 50px;
+}
+
+#navbar-dates .form-group {
+    margin: 0;
+}
+
+#navbar-dates input {
+    line-height: 20px;
+    display: inline-block;
+    border-radius: 12px;
+    padding: 3px;
+    text-align: center;
+}
+
+#choose-faq {
+    width: 360px;
+    line-height: 20px;
+    height: 2.2em;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 5px;
+    background-color: rgba(250, 168, 0, 0.2);
+    margin: 4px;
+}
+
+.first {
+    background-color: #bec6ff;
+}
